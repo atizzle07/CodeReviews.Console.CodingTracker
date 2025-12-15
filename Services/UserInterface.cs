@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Text;
-using CodingTrackerApp.Models;
-using Microsoft.VisualBasic;
+﻿using CodingTrackerApp.Models;
 using Spectre.Console;
 
 namespace CodingTrackerApp.Services;
@@ -70,15 +65,24 @@ internal class UserInterface
         userInput = Console.ReadLine();
 
         if (userInput == "NOW")
-            codeEvent.StartTime = DateTime.Now.ToString(format);
-        else
-            isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate);
-
-
-        if (isValid)
         {
-            codeEvent.StartTime = parsedDate.ToString(format);
+            codeEvent.StartTime = DateTime.Now.ToString(format);
         }
+        else
+        {
+            isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate);
+            if (isValid)
+            {
+                codeEvent.StartTime = parsedDate.ToString(format);
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[bold red]Invalid Entry, please provide a valid entry...[/]");
+            }
+
+        }
+
+        
 
 
 

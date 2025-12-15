@@ -42,7 +42,7 @@ public class DataConnection
 
         using (SQLiteConnection conn = new SQLiteConnection(connectionString))
         {
-            conn.Query(insertQuery, _event); 
+            conn.Query(insertQuery, _event);
         }
     }
 
