@@ -1,16 +1,18 @@
-﻿using Dapper;
+﻿using CodingTrackerApp.Models;
+using Dapper;
+using Spectre.Console;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.SQLite;
 using System.Text;
-using System.Configuration;
+using System.Xml.Linq;
 
 
-namespace CodingTrackerApp;
+namespace CodingTrackerApp.Services;
 
 public class DataConnection
 {
-    private static string databaseName = "codingtracker";
     string tableName = "event";
     static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
     public DataConnection()
@@ -26,9 +28,26 @@ public class DataConnection
                                 Details TEXT
                                 )";
 
-        using (var conn = new SQLiteConnection(connectionString))
+        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
         {
+            conn.Open();
             conn.Execute(createTableText);
+            conn.Close();
         }
+    }
+
+    void InsertRecord(Event _event)
+    {
+        string insertQuery = "INSERT INTO {tableName} (StartTime, Endtime, Details) VALUES (@StartTime, @Endtime, @Details");
+
+        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+        {
+            conn.Query(insertQuery, _event); 
+        }
+    }
+
+    public void UpdateRecord(int ID)
+    {
+        Console.WriteLine($"ID: {ID}");
     }
 }
