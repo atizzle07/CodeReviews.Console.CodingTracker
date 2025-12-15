@@ -3,7 +3,7 @@ using Spectre.Console;
 
 namespace CodingTrackerApp.Services;
 
-internal class UserInterface
+public static class UserInterface
 {
     public static void WelcomeMessage()
     {
@@ -51,42 +51,52 @@ internal class UserInterface
         AnsiConsole.MarkupLine("[bold blue]ViewRecords Method Reached! You entered:[/]");
     }
 
-    public Event GetInsertRecordInfo()
+    public static Event GetInsertRecordInfo()
     {
         Console.Clear();
-        string userInput;
+        string? userInput;
         DateTime parsedDate;
-        bool isValid;
+        bool isValid = false;
         string format = "MM-dd-yyyy-HH:mm";
         Event codeEvent = new();
 
         AnsiConsole.Markup($"[bold orange3]Please enter info about your coding session...[/]");
-        AnsiConsole.Markup($"[bold orange3]Start Time ({format} (24-hr) or enter [white on gray]NOW[/] for current time/date)[/]");
-        userInput = Console.ReadLine();
 
-        if (userInput == "NOW")
-        {
-            codeEvent.StartTime = DateTime.Now.ToString(format);
-        }
-        else
-        {
-            isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate);
-            if (isValid)
-            {
-                codeEvent.StartTime = parsedDate.ToString(format);
-            }
-            else
-            {
-                AnsiConsole.MarkupLine("[bold red]Invalid Entry, please provide a valid entry...[/]");
-            }
+        codeEvent.StartTime = GetDateFromUser().ToString(); //Currently does not allow null values
+        codeEvent.EndTime = GetDateFromUser().ToString(); //Currently does not allow null values
 
-        }
-
-        
-
-
-
+        AnsiConsole.Markup($"[bold orange3]Please enter any comments you would like to save...[/]");
+        codeEvent.Details = Console.ReadLine();
 
         return codeEvent;
+    }
+
+    public static DateTime GetDateFromUser()
+    {
+        string? userInput;
+        DateTime parsedDate;
+        bool isValid = false;
+        string format = "MM-dd-yyyy-HH:mm";
+
+        while (true)
+        {
+            AnsiConsole.Markup($"[bold orange3]Enter time/date ({format} (24-hr) or enter [white on gray]NOW[/] for current time/date)[/]");
+            userInput = Console.ReadLine();
+
+            if (userInput == "NOW")
+            {
+                return DateTime.Now;
+            }
+            else if (isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
+            {
+                return parsedDate;
+            }
+            else if (userInput == null)
+            {
+                // TODO - Need to to allow for null values in the end time. This allows creating of a record for both before coding event has happened and after.
+            }
+
+                AnsiConsole.Markup($"[bold red]Invalid Entry, please try again...[/]");
+        }
     }
 }

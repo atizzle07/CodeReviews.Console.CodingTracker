@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodingTrackerApp.Models;
 
-internal class Event
+public class Event
 {
     public int ID { get; set; }
     public string StartTime { get; set; }

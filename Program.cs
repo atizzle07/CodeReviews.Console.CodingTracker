@@ -1,17 +1,15 @@
-﻿using CodingTrackerApp;
+﻿using CodingTrackerApp.Models;
 using CodingTrackerApp.Services;
 using Spectre.Console;
-using System.Security.Principal;
 
 
 namespace CodingTrackerApp;
 
 public class Program
 {
-
-    DataConnection conn = new();
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
+        DataConnection conn = new();
         string menuChoice;
         UserInterface.WelcomeMessage();
 
@@ -24,6 +22,7 @@ public class Program
                 case "1":
                     AnsiConsole.MarkupLine($"[orange3]You selected {menuChoice}[/]");
                     Console.ReadKey();
+                    InsertNewRecord();
                     break;
                 case "2":
                     AnsiConsole.MarkupLine($"[orange3]You selected {menuChoice}[/]");
@@ -47,5 +46,12 @@ public class Program
             }
         }
         while (menuChoice != "x");
+
+
+        void InsertNewRecord()
+        {
+            Event newEvent = UserInterface.GetInsertRecordInfo();
+            conn.InsertRecord(newEvent);
+        }
     }
 }

@@ -30,15 +30,16 @@ public class DataConnection
 
         using (SQLiteConnection conn = new SQLiteConnection(connectionString))
         {
+            // TODO - Need to refactor this to Dapper execution. Currently in ADO.net format.
             conn.Open();
             conn.Execute(createTableText);
             conn.Close();
         }
     }
 
-    void InsertRecord(Event _event)
+    public void InsertRecord(Event _event)
     {
-        string insertQuery = "INSERT INTO {tableName} (StartTime, Endtime, Details) VALUES (@StartTime, @Endtime, @Details");
+        string insertQuery = $"INSERT INTO {tableName} (StartTime, Endtime, Details) VALUES (@StartTime, @Endtime, @Details";
 
         using (SQLiteConnection conn = new SQLiteConnection(connectionString))
         {
