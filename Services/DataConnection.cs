@@ -14,7 +14,7 @@ namespace CodingTrackerApp.Services;
 public class DataConnection
 {
     string tableName = "event";
-    static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
+    static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; //TODO - This throws an error. The computer cannot find the connection string with this code.
     public DataConnection()
     {
         CreateTable();

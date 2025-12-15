@@ -54,10 +54,6 @@ public static class UserInterface
     public static Event GetInsertRecordInfo()
     {
         Console.Clear();
-        string? userInput;
-        DateTime parsedDate;
-        bool isValid = false;
-        string format = "MM-dd-yyyy-HH:mm";
         Event codeEvent = new();
 
         AnsiConsole.Markup($"[bold orange3]Please enter info about your coding session...[/]");
@@ -96,7 +92,7 @@ public static class UserInterface
                 // TODO - Need to to allow for null values in the end time. This allows creating of a record for both before coding event has happened and after.
             }
 
-                AnsiConsole.Markup($"[bold red]Invalid Entry, please try again...[/]");
+            AnsiConsole.Markup($"[bold red]Invalid Entry, please try again...[/]");
         }
     }
 }
