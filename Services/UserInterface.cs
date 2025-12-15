@@ -56,7 +56,7 @@ internal class UserInterface
         AnsiConsole.MarkupLine("[bold blue]ViewRecords Method Reached! You entered:[/]");
     }
 
-    public static void GetInsertRecordInfo()
+    public Event GetInsertRecordInfo()
     {
         Console.Clear();
         string userInput;
@@ -70,11 +70,19 @@ internal class UserInterface
         userInput = Console.ReadLine();
 
         if (userInput == "NOW")
-        {
             codeEvent.StartTime = DateTime.Now.ToString(format);
-        } else
-        {
+        else
             isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate);
+
+
+        if (isValid)
+        {
+            codeEvent.StartTime = parsedDate.ToString(format);
         }
+
+
+
+
+        return codeEvent;
     }
 }
