@@ -1,7 +1,8 @@
 {
   "profiles": {
     "CodingTrackerApp": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "workingDirectory": "C:\\Users\\tripp\\source\\repos\\TheCSharpAcademy\\ConsoleProjects\\CodeReviews.Console.CodingTracker\\"
     }
   }
 }

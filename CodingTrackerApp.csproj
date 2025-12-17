@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="codingtracker.db" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.66">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
