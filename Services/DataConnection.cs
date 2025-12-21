@@ -1,7 +1,6 @@
 ﻿using CodingTrackerApp.Models;
 using Dapper;
 using Spectre.Console;
-using Spectre.Console.Rendering;
 using System.Data.SQLite;
 
 
@@ -10,7 +9,7 @@ namespace CodingTrackerApp.Services;
 public static class DataConnection
 {
     static readonly string tableName = "event";
-    //TODO - This throws an error. The computer cannot find the connection string with this code.
+    //TODO - Need to add config connection logic. This code throws an error. The computer cannot find the connection string.
     //static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; 
     static readonly string connectionString = "Data Source=codingtracker.db;Version=3;";
 
@@ -31,13 +30,13 @@ public static class DataConnection
 
     public static void InsertRecord()
     {
+        Console.Clear();
         Event newEvent = UI.GetNewRecordInfo();
         string insertQuery = $"INSERT INTO {tableName} (StartTime, EndTime, Details) VALUES (@StartTime, @EndTime, @Details)";
 
         using (var conn = new SQLiteConnection(connectionString))
         {
             var rowsAffected = conn.Execute(insertQuery, newEvent);
-
             if (rowsAffected != 0)
             {
                 AnsiConsole.MarkupLine($"[bold green]Insert successful. Rows inserted:[/] {rowsAffected}");
@@ -82,8 +81,28 @@ public static class DataConnection
 
     public static void UpdateRecord()
     {
-        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
-        Console.ReadKey();
+        string updateQuery = $"UPDATE {tableName} SET StartTime = @StartTime, EndTime = @EndTime, Details = @Details WHERE ID = @ID";
+        ViewAllRecords();
+        int updateRecord = UI.GetValidRecordID();
+        Event codeEvent = UI.GetNewRecordInfo();
+        codeEvent.ID = updateRecord;
+
+        using (var conn = new SQLiteConnection(connectionString))
+        {
+            var rowsAffected = conn.Execute(updateQuery, codeEvent);
+
+            if (rowsAffected != 0)
+            {
+                AnsiConsole.MarkupLine($"[bold green]Update successful.[/]");
+                Console.ReadKey();
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[bold red]Update failed.[/]");
+                Console.ReadKey();
+            }
+        }
+
     }
 
     public static void DeleteRecord()
@@ -97,7 +116,7 @@ public static class DataConnection
 
         using (var conn = new SQLiteConnection(connectionString))
         {
-            int rowsAffected = conn.Execute(deleteQuery, new {ID = id});
+            int rowsAffected = conn.Execute(deleteQuery, new { ID = id });
 
             if (rowsAffected != 0)
             {

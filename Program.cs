@@ -26,7 +26,6 @@ public class Program
                     break;
                 case "3":
                     DataConnection.UpdateRecord();
-                    Console.ReadKey();
                     break;
                 case "4":
                     DataConnection.DeleteRecord();
@@ -36,7 +35,6 @@ public class Program
                     break;
                 case "x":
                     AnsiConsole.MarkupLine("[orange3]Exiting Application... Press Enter to Continue[/]");
-                    Console.ReadKey();
                     break;
                 default:
                     AnsiConsole.MarkupLine("[bold red]Invalid Entry. Please make a selection from the menu[/]");

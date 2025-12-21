@@ -59,7 +59,7 @@ public static class UI
     }
     public static Event GetNewRecordInfo() //TODO - adjust name to remove improved
     {
-        Console.Clear();
+        //Console.Clear();
         Event codeEvent = new();
 
         codeEvent.StartTime = GetDateFromUser("Start Time").ToString();
@@ -78,7 +78,9 @@ public static class UI
         Rule rule = new Rule($"[orange3]{prompt}[/]");
         AnsiConsole.Write(rule);
 
-        input = AnsiConsole.Ask<string>("To save the current date/time, enter [blue on yellow]NOW[/] or press any key to continue.");
+        input = AnsiConsole.Prompt(
+            new TextPrompt<string>("To save the current date/time, enter [blue on yellow]NOW[/] or press [black on white]ENTER[/] to continue.")
+            .AllowEmpty());
         if (input.ToLower() == "now")
             return DateTime.Now;
         else
