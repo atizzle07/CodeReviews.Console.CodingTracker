@@ -12,7 +12,6 @@ public static class UI
         AnsiConsole.MarkupLine("[bold orange3]In this application you will keep track of coding sessions using a start and stop time. To Continue, please press Enter... [/]");
         Console.ReadKey();
     }
-
     public static string GetMainMenuChoice()
     {
         Console.Clear();
@@ -32,13 +31,14 @@ public static class UI
             AnsiConsole.MarkupLine($"[red]X[/] - Exit the application");
             AnsiConsole.Markup("[green]Your Selection: [/]");
             userInput = Console.ReadLine().ToLower();
-
+            Console.WriteLine("\n\n");
             switch (userInput)
             {
                 case "1":
                 case "2":
                 case "3":
                 case "4":
+                case "5":
                 case "x":
                     return userInput;
                 default:
@@ -47,102 +47,70 @@ public static class UI
             }
         }
     }
-
-    public static void ViewRecords()
+    static public void ReportsMenu()
     {
-        AnsiConsole.MarkupLine("[bold blue]ViewRecords Method Reached! You entered:[/]");
-    }
+        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
+        Console.ReadKey();
 
-    public static Event GetInsertRecordInfo()
+        // View top 5 longest coding sessions
+        // View Average session time
+        // Challenge Requirement - total and average coding session per period. Allow user to pick grouping by day / month / year
+
+    }
+    public static Event GetNewRecordInfo() //TODO - adjust name to remove improved
     {
         Console.Clear();
         Event codeEvent = new();
 
-        AnsiConsole.Markup($"[bold orange3]Please enter info about your coding session...[/]");
-
-        codeEvent.StartTime = GetDateFromUser().ToString(); //Currently does not allow null values
-        codeEvent.EndTime = GetDateFromUser().ToString(); //Currently does not allow null values
+        codeEvent.StartTime = GetDateFromUser("Start Time").ToString();
+        codeEvent.EndTime = GetDateFromUser("End Time").ToString();
 
         AnsiConsole.Markup($"[bold orange3]Please enter any comments you would like to save...[/]");
         codeEvent.Details = Console.ReadLine();
-
         return codeEvent;
     }
-
-    public static Event GetInsertRecordInfoImproved()
-    {
-        Console.Clear();
-        Event codeEvent = new();
-
-        codeEvent.StartTime = GetDateFromUserImproved("Start Time").ToString();
-        codeEvent.EndTime = GetDateFromUserImproved("End Time").ToString();
-
-    }
-
-    public static DateTime GetDateFromUserImproved(string prompt)
+    public static DateTime GetDateFromUser(string prompt)
     {
         DateOnly parsedDate;
         TimeOnly parsedTime;
         string input;
         bool isValid = false;
         Rule rule = new Rule($"[orange3]{prompt}[/]");
+        AnsiConsole.Write(rule);
 
-        input = AnsiConsole.Prompt(new TextPrompt<string>(""));
+        input = AnsiConsole.Ask<string>("To save the current date/time, enter [blue on yellow]NOW[/] or press any key to continue.");
         if (input.ToLower() == "now")
             return DateTime.Now;
-
-        do
+        else
         {
-            string date = AnsiConsole.Prompt(new TextPrompt<string>("Enter Date [MM-dd-YYYY]"));
-            if (DateOnly.TryParseExact(date, "MM-dd-YYYY", out parsedDate))
-                isValid = true;
-            else
-                AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
-        }
-        while (!isValid);
-
-        do
-        {
-            string time = AnsiConsole.Prompt(new TextPrompt<string>("Enter 24HR Time [HH:MM]"));
-            if (TimeOnly.TryParseExact(time, "HH:MM", out parsedTime))
-                isValid = true;
-            else
-                AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
-        }
-        while (!isValid);
-
-        return parsedDate.ToDateTime(parsedTime);
-    }
-
-    public static DateTime GetDateFromUser() // REMOVE - This method works but has been superceded by the improved method.
-    {
-        string? userInput;
-        DateTime parsedDate;
-        bool isValid = false;
-        string format = "MM-dd-yyyy-HH:mm";
-
-        while (true)
-        {
-            AnsiConsole.Markup($"[bold orange3]Enter time/date ({format} (24-hr) or enter [white on gray]NOW[/] for current time/date)[/]");
-            userInput = Console.ReadLine();
-
-            if (userInput == "NOW")
+            do
             {
-                return DateTime.Now;
-            }
-            else if (isValid = DateTime.TryParseExact(userInput, format, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out parsedDate))
-            {
-                return parsedDate;
-            }
-            else if (userInput == null)
-            {
-                // TODO - Need to to allow for null values in the end time. This allows creating of a record for both before coding event has happened and after.
-            }
+                string date = AnsiConsole.Ask<string>("Enter Date [[MM-dd-YYYY]]");
+                if (DateOnly.TryParseExact(date, "MM-dd-yyyy", out parsedDate))
+                {
+                    // ERROR CHECK. Error if:
+                    // date is in the future
+                    // check for months between 1-12, days between 1-31
+                    isValid = true;
+                }
+                else
+                {
+                    AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
+                }
+            } while (!isValid);
 
-            AnsiConsole.Markup($"[bold red]Invalid Entry, please try again...[/]");
+            do
+            {
+                string time = AnsiConsole.Ask<string>("Enter 24HR Time [[HH:MM]]");
+                if (TimeOnly.TryParseExact(time, "HH:mm", out parsedTime))
+                    isValid = true;
+                else
+                    AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
+            } while (!isValid);
+
+            return parsedDate.ToDateTime(parsedTime);
         }
     }
-
     public static void BuildObjTable(List<Event> events)
     {
         Table table = new();
@@ -164,5 +132,22 @@ public static class UI
 
         AnsiConsole.Write(table);
         Console.ReadKey();
+    }
+    public static int GetValidRecordID()
+    {
+        do
+        {
+            string id = AnsiConsole.Ask<string>("Enter Record ID:");
+            if (int.TryParse(id, out int parsedID))
+            {
+                if (Validation.isValidID(parsedID))
+                    return parsedID;
+            }
+            else
+            {
+                continue;
+            }
+        }
+        while (true);
     }
 }

@@ -1,32 +1,20 @@
 ﻿using CodingTrackerApp.Models;
 using Dapper;
 using Spectre.Console;
+using Spectre.Console.Rendering;
 using System.Data.SQLite;
-using System.Reflection;
 
 
 namespace CodingTrackerApp.Services;
 
-public class DataConnection
+public static class DataConnection
 {
-    string tableName = "event";
+    static readonly string tableName = "event";
     //TODO - This throws an error. The computer cannot find the connection string with this code.
     //static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; 
-    static string connectionString = "Data Source=codingtracker.db;Version=3;";
-    public DataConnection()
-    {
-        try
-        {
-            CreateTable();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-            Console.WriteLine(ex.InnerException?.ToString());
-            Console.ReadKey();
-        }
-    }
-    public void CreateTable()
+    static readonly string connectionString = "Data Source=codingtracker.db;Version=3;";
+
+    public static void CreateTable()
     {
         string createTableText = @$"CREATE TABLE IF NOT EXISTS {tableName}(
                                 ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,13 +29,14 @@ public class DataConnection
         }
     }
 
-    public void InsertRecord(Event _event)
+    public static void InsertRecord()
     {
+        Event newEvent = UI.GetNewRecordInfo();
         string insertQuery = $"INSERT INTO {tableName} (StartTime, EndTime, Details) VALUES (@StartTime, @EndTime, @Details)";
 
         using (var conn = new SQLiteConnection(connectionString))
         {
-            var rowsAffected = conn.Execute(insertQuery, _event);
+            var rowsAffected = conn.Execute(insertQuery, newEvent);
 
             if (rowsAffected != 0)
             {
@@ -62,12 +51,12 @@ public class DataConnection
         }
     }
 
-    public void ViewAllRecords()
+    public static void ViewAllRecords()
     {
-        string selectAllQuery = $"SELECT * FROM {tableName}";
+        string selectQuery = $"SELECT * FROM {tableName}";
         using (var conn = new SQLiteConnection(connectionString))
         {
-            var output = conn.Query<Event>(selectAllQuery).ToList();
+            var output = conn.Query<Event>(selectQuery).ToList();
 
             if (output.Count() == 0)
             {
@@ -79,13 +68,47 @@ public class DataConnection
                 UI.BuildObjTable(output);
             }
         }
-
-
     }
-    public void UpdateRecord(int ID)
+
+    public static List<int> GetAllRecordIDs()
     {
-        Console.WriteLine($"ID: {ID}");
+        string selectRecordIDQuery = $"SELECT ID FROM {tableName}";
+        using (var conn = new SQLiteConnection(connectionString))
+        {
+            var output = conn.Query<int>(selectRecordIDQuery).ToList();
+            return output;
+        }
     }
 
-    
+    public static void UpdateRecord()
+    {
+        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
+        Console.ReadKey();
+    }
+
+    public static void DeleteRecord()
+    {
+        ViewAllRecords();
+        Rule rule = new Rule("[bold red]Delete Record[/]").LeftJustified();
+        AnsiConsole.Write(rule);
+        //AnsiConsole.MarkupLine("[red]Delete Record[/]");
+        int id = UI.GetValidRecordID();
+        string deleteQuery = $"DELETE FROM {tableName} WHERE ID = @ID";
+
+        using (var conn = new SQLiteConnection(connectionString))
+        {
+            int rowsAffected = conn.Execute(deleteQuery, new {ID = id});
+
+            if (rowsAffected != 0)
+            {
+                AnsiConsole.Markup($"[bold green]Delete successful. Rows deleted:[/] {rowsAffected}");
+                Console.ReadKey();
+            }
+            else
+            {
+                AnsiConsole.Markup($"[bold red]Delete failed. Rows deleted:[/] {rowsAffected}");
+                Console.ReadKey();
+            }
+        }
+    }
 }
