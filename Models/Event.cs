@@ -12,8 +12,6 @@ public class Event
     //TODO - NEED TO MAKE SURE THAT CREATED OBJECTS HAVE THE CORRECT DATE FORMAT
     public string? EndTime { get; set; }
     public string? Details { get; set; }
-
-
 }
 
 

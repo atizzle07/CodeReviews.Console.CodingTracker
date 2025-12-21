@@ -1,12 +1,8 @@
 ﻿using CodingTrackerApp.Models;
 using Dapper;
 using Spectre.Console;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Data.SQLite;
-using System.Text;
-using System.Xml.Linq;
+using System.Reflection;
 
 
 namespace CodingTrackerApp.Services;
@@ -14,7 +10,9 @@ namespace CodingTrackerApp.Services;
 public class DataConnection
 {
     string tableName = "event";
-    static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; //TODO - This throws an error. The computer cannot find the connection string with this code.
+    //TODO - This throws an error. The computer cannot find the connection string with this code.
+    //static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; 
+    static string connectionString = "Data Source=codingtracker.db;Version=3;";
     public DataConnection()
     {
         try
@@ -27,7 +25,6 @@ public class DataConnection
             Console.WriteLine(ex.InnerException?.ToString());
             Console.ReadKey();
         }
-        
     }
     public void CreateTable()
     {
@@ -38,30 +35,57 @@ public class DataConnection
                                 Details TEXT
                                 )";
 
-        Console.WriteLine("Before Create");
-        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(connectionString))
         {
-            // TODO - Need to refactor this to Dapper execution. Currently in ADO.net format.
-            conn.Open();
             conn.Execute(createTableText);
-            conn.Close();
         }
     }
 
     public void InsertRecord(Event _event)
     {
-        string insertQuery = $"INSERT INTO {tableName} (StartTime, Endtime, Details) VALUES (@StartTime, @Endtime, @Details)";
+        string insertQuery = $"INSERT INTO {tableName} (StartTime, EndTime, Details) VALUES (@StartTime, @EndTime, @Details)";
 
-        using (SQLiteConnection conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(connectionString))
         {
-            conn.Open();
-            conn.Query(insertQuery, _event);// TODO - This does not work, debuigger says insufficient data provided. Likely need to include the ID field
-            conn.Close();
+            var rowsAffected = conn.Execute(insertQuery, _event);
+
+            if (rowsAffected != 0)
+            {
+                AnsiConsole.MarkupLine($"[bold green]Insert successful. Rows inserted:[/] {rowsAffected}");
+                Console.ReadKey();
+            }
+            else
+            {
+                AnsiConsole.MarkupLine($"[bold red]Insert failed. Rows inserted:[/] {rowsAffected}");
+                Console.ReadKey();
+            }
         }
     }
 
+    public void ViewAllRecords()
+    {
+        string selectAllQuery = $"SELECT * FROM {tableName}";
+        using (var conn = new SQLiteConnection(connectionString))
+        {
+            var output = conn.Query<Event>(selectAllQuery).ToList();
+
+            if (output.Count() == 0)
+            {
+                AnsiConsole.MarkupLine($"[bold red]No Records Found[/]");
+                Console.ReadKey();
+            }
+            else
+            {
+                UI.BuildObjTable(output);
+            }
+        }
+
+
+    }
     public void UpdateRecord(int ID)
     {
         Console.WriteLine($"ID: {ID}");
     }
+
+    
 }

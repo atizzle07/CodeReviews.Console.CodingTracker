@@ -37,7 +37,7 @@ In the first app we also didn’t have requirements for coding organization. Thi
 - When reading from the database, you can't use an anonymous object, you have to read your table into a List of Coding Sessions.
 
 
-- ollow the **DRY Principle**, and avoid code repetition.
+- Follow the **DRY Principle**, and avoid code repetition.
 
 ### Resources
 If you have learned the basics of C# following the C# Foundations article, and completed the Habit Logger project, you should know all the basic techniques needed to complete this project. Here’s a list of extra resources you might need:

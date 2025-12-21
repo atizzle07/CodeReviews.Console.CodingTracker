@@ -11,22 +11,19 @@ public class Program
     {
         DataConnection conn = new();
         string menuChoice;
-        UserInterface.WelcomeMessage();
+        UI.WelcomeMessage();
 
         do
         {
-            menuChoice = UserInterface.GetMainMenuChoice();
+            menuChoice = UI.GetMainMenuChoice();
 
             switch (menuChoice)
             {
                 case "1":
-                    AnsiConsole.MarkupLine($"[orange3]You selected {menuChoice}[/]");
-                    Console.ReadKey();
                     InsertNewRecord();
                     break;
                 case "2":
-                    AnsiConsole.MarkupLine($"[orange3]You selected {menuChoice}[/]");
-                    Console.ReadKey();
+                    conn.ViewAllRecords();
                     break;
                 case "3":
                     AnsiConsole.MarkupLine($"[orange3]You selected {menuChoice}[/]");
@@ -50,7 +47,7 @@ public class Program
 
         void InsertNewRecord()
         {
-            Event newEvent = UserInterface.GetInsertRecordInfo();
+            Event newEvent = UI.GetInsertRecordInfo();
             conn.InsertRecord(newEvent);
         }
     }
