@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CodingTrackerApp.Models;
+﻿namespace CodingTrackerApp.Models;
 
 public class Event
 {
@@ -11,5 +7,17 @@ public class Event
     public string? EndTime { get; set; }
     public string? Details { get; set; }
 
-    //TODO - Need to add time duration data and a way to calculate it
+    public TimeSpan? Duration
+    {
+        get
+        {
+            if (EndTime != null)
+            {
+                DateTime _startTime = Convert.ToDateTime(StartTime);
+                DateTime _endTime = Convert.ToDateTime(EndTime);
+                return _endTime - _startTime;
+            }
+            return null;
+        }
+    }
 }

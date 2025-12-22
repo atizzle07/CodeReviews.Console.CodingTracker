@@ -128,7 +128,8 @@ public static class UI
                 Convert.ToString(item.ID) ?? "",
                 Convert.ToString(item.StartTime) ?? "",
                 Convert.ToString(item.EndTime) ?? "",
-                Convert.ToString(item.Details) ?? ""
+                Convert.ToString(item.Details) ?? "",
+                Convert.ToString(item.Duration) ?? ""
                 ]);
         }
 
