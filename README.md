@@ -25,29 +25,14 @@ This is a C# console-based application for tracking time-based events. Users can
 ---
 
 ## Project Structure
-High-level overview of folders and responsibilities.
 
-Example:
-- `Models/` – Domain models (Event, etc.)
-- `Services/` – Business logic and workflows
-- `Data/` – Database access and Dapper queries
-- `UI/` – Console prompts and output helpers
+- `Data/` – Data for different menu operations
+- `Models/` – Data structures for CRUD operations
+- `Services/` – Handles utility operations such as UI display, database operations, etc.
 - `Program.cs` – Application entry point
 
 ---
 
-## Getting Started
+## My Summary
 
-### Prerequisites
-- .NET SDK (version X.X or later)
-- SQLite (optional – auto-created if not present)
-
----
-
-### Installation
-Steps to clone and run the application.
-
-```bash
-git clone <repo-url>
-cd <project-folder>
-dotnet run
+This one definitely challenged my OOP knowledge but really helped me focus on how different objects can interact with each other. This was the first time I didn't follow many tutorials and instead looked at documentation and I feel like I learned a ton! I restarted this a few times before I really got a feel for where classes, folders, etc needed to be located but I feel pretty good about the program layout.

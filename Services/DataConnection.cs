@@ -37,7 +37,7 @@ public static class DataConnection
         using (var conn = new SQLiteConnection(connectionString))
         {
             var rowsAffected = conn.Execute(insertQuery, newEvent);
-            if (rowsAffected != 0)
+            if (rowsAffected != 0) // TODO - Change these to UI.OperationFailed() and UI.OperationSucceeded() methods to move UI logic out of this class
             {
                 AnsiConsole.MarkupLine($"[bold green]Insert successful. Rows inserted:[/] {rowsAffected}");
                 Console.ReadKey();
@@ -50,7 +50,7 @@ public static class DataConnection
         }
     }
 
-    public static void ViewAllRecords()
+    public static void ViewAllRecords() //TODO - change to "GetAllRecords" and list<event> instead of void to move UI logic out of this class
     {
         string selectQuery = $"SELECT * FROM {tableName}";
         using (var conn = new SQLiteConnection(connectionString))
@@ -133,6 +133,30 @@ public static class DataConnection
 
     public static void GetTopRecords(int records)
     {
+
+    }
+
+    internal static List<Event> GetTopResults(int numRecords)
+    {
+        string query = $"SELECT * FROM {tableName}";
+        List<Event> output = new();
+        using (var conn = new SQLiteConnection(connectionString))
+        {
+            output = conn.Query<Event>(query).ToList();
+        }
+
+        if (output.Count() == 0)
+        {
+            AnsiConsole.MarkupLine($"[bold red]No Records Found[/]");
+            Console.ReadKey();
+        }
+        else
+        {
+            output.OrderByDescending(x => x.Duration)
+                .Take(numRecords)
+                .ToList();
+        }
+        return output;
 
     }
 }

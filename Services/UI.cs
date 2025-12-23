@@ -2,7 +2,6 @@
 using CodingTrackerApp.Models;
 using Spectre.Console;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 
 namespace CodingTrackerApp.Services;
 
@@ -14,45 +13,11 @@ public static class UI
         AnsiConsole.MarkupLine("[bold orange3]In this application you will keep track of coding sessions using a start and stop time. To Continue, please press Enter... [/]");
         Console.ReadKey();
     }
-    public static string GetMainMenuChoice()
+    public static MenuOption GetMainMenuChoice()
     {
         Console.Clear();
-        string userInput;
 
-        while (true)
-        {
-            var menuTitle = new Rule("[bold orange3]Main Menu[/]");
-            menuTitle.Justification = Justify.Left;
-            AnsiConsole.Write(menuTitle);
-            Console.WriteLine();
-            AnsiConsole.MarkupLine($"[green]1[/] - Add an entry");
-            AnsiConsole.MarkupLine($"[green]2[/] - View saved entries");
-            AnsiConsole.MarkupLine($"[green]3[/] - Update an entry");
-            AnsiConsole.MarkupLine($"[green]4[/] - Delete an entry");
-            AnsiConsole.MarkupLine($"[green]5[/] - View Reports");
-            AnsiConsole.MarkupLine($"[red]X[/] - Exit the application");
-            AnsiConsole.Markup("[green]Your Selection: [/]");
-            userInput = Console.ReadLine().ToLower();
-            Console.WriteLine("\n\n");
-            switch (userInput)
-            {
-                case "1":
-                case "2":
-                case "3":
-                case "4":
-                case "5":
-                case "x":
-                    return userInput;
-                default:
-                    AnsiConsole.MarkupLine("[red]Invalid entry. Please type a [/][green]menu choice[/]");
-                    break;
-            }
-        }
-    }
-
-    public static MenuOption GetMenuChoice()
-    {
-        Console.Clear();
+        //TODO - Put this menu selection in a frame
         var userInput = AnsiConsole.Prompt(
             new SelectionPrompt<MenuOption>()
             .Title("Please select a menu Option:")
@@ -65,8 +30,7 @@ public static class UI
             }));
         return userInput;
     }
-
-    public static Event GetNewRecordInfo() //TODO - adjust name to remove improved
+    public static Event GetNewRecordInfo()
     {
         //Console.Clear();
         Event codeEvent = new();
@@ -164,27 +128,61 @@ public static class UI
     }
     static public void ReportsMenu()
     {
-        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
-        Console.ReadKey();
+        Console.Clear();
 
-        AnsiConsole.MarkupLine("[bold red]Please select a report.[/]");
-        Console.ReadKey();
+        //TODO - Put this menu selection in a frame
+        var userInput = AnsiConsole.Prompt(
+            new SelectionPrompt<Reports>()
+            .Title("Please select a report to view:")
+            .AddChoices(new[] {
+                Reports.TopResults,
+                Reports.AverageTime,
+                Reports.TotalPerMonth,
+                Reports.TotalPerYear,
+                Reports.WeeklyBarCount,
+                Reports.WeeklyBarTotal,
+                Reports.MonthlyBarCount,
+                Reports.MonthlyBarTotal
+            }));
 
-
-        // View Average session time
-        // Challenge Requirement - total and average coding session per period. Allow user to pick grouping by day / month / year
-
+        switch (userInput)
+        {
+            case Reports.TopResults:
+                DisplayTopResults();
+                break;
+            case Reports.AverageTime:
+                break;
+            case Reports.TotalPerMonth:
+                break;
+            case Reports.TotalPerYear:
+                break;
+            case Reports.WeeklyBarCount:
+                break;
+            case Reports.WeeklyBarTotal:
+                break;
+            case Reports.MonthlyBarCount:
+                break;
+            case Reports.MonthlyBarTotal:
+                break;
+            default:
+                break;
+        }
     }
 
-    static public void TopResults()
+    static public void DisplayTopResults()
     {
-        // View top 3 longest coding sessions
+        // View top x longest coding sessions
         int records;
         do
         {
             records = AnsiConsole.Prompt(
             new TextPrompt<int>("Please select the amount of records to display (max 5): "));
         }
-        while (records >= 0 && records <= 5);
+        while (records < 0 && records > 5);
+
+        var top3 = DataConnection.GetTopResults(records);
+
+        BuildObjTable(top3);
+
     }
 }

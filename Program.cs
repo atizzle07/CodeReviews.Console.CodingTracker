@@ -15,7 +15,7 @@ public class Program
 
         do
         {
-            option = UI.GetMenuChoice();
+            option = UI.GetMainMenuChoice();
 
             switch (option)
             {
