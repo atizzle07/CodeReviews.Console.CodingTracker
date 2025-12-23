@@ -130,4 +130,9 @@ public static class DataConnection
             }
         }
     }
+
+    public static void GetTopRecords(int records)
+    {
+
+    }
 }

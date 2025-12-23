@@ -1,4 +1,5 @@
-﻿using CodingTrackerApp.Services;
+﻿using CodingTrackerApp.Data;
+using CodingTrackerApp.Services;
 using Spectre.Console;
 
 
@@ -9,38 +10,35 @@ public class Program
     public static void Main(string[] args)
     {
         DataConnection.CreateTable();
-        string menuChoice;
+        MenuOption option;
         UI.WelcomeMessage();
 
         do
         {
-            menuChoice = UI.GetMainMenuChoice();
+            option = UI.GetMenuChoice();
 
-            switch (menuChoice)
+            switch (option)
             {
-                case "1":
+                case MenuOption.AddEntry:
                     DataConnection.InsertRecord();
                     break;
-                case "2":
+                case MenuOption.ViewSavedEntries:
                     DataConnection.ViewAllRecords();
                     break;
-                case "3":
+                case MenuOption.UpdateEntry:
                     DataConnection.UpdateRecord();
                     break;
-                case "4":
+                case MenuOption.DeleteEntry:
                     DataConnection.DeleteRecord();
                     break;
-                case "5":
+                case MenuOption.Reports:
                     UI.ReportsMenu();
                     break;
-                case "x":
+                case MenuOption.ExitApplication:
                     AnsiConsole.MarkupLine("[orange3]Exiting Application... Press Enter to Continue[/]");
-                    break;
-                default:
-                    AnsiConsole.MarkupLine("[bold red]Invalid Entry. Please make a selection from the menu[/]");
                     break;
             }
         }
-        while (menuChoice != "x");
+        while (option != MenuOption.ExitApplication);
     }
 }

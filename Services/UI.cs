@@ -1,6 +1,8 @@
-﻿using CodingTrackerApp.Models;
+﻿using CodingTrackerApp.Data;
+using CodingTrackerApp.Models;
 using Spectre.Console;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CodingTrackerApp.Services;
 
@@ -47,16 +49,23 @@ public static class UI
             }
         }
     }
-    static public void ReportsMenu()
+
+    public static MenuOption GetMenuChoice()
     {
-        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
-        Console.ReadKey();
-
-        // View top 5 longest coding sessions
-        // View Average session time
-        // Challenge Requirement - total and average coding session per period. Allow user to pick grouping by day / month / year
-
+        Console.Clear();
+        var userInput = AnsiConsole.Prompt(
+            new SelectionPrompt<MenuOption>()
+            .Title("Please select a menu Option:")
+            .AddChoices(new[] {
+                MenuOption.AddEntry,
+                MenuOption.ViewSavedEntries,
+                MenuOption.UpdateEntry,
+                MenuOption.DeleteEntry,
+                MenuOption.Reports
+            }));
+        return userInput;
     }
+
     public static Event GetNewRecordInfo() //TODO - adjust name to remove improved
     {
         //Console.Clear();
@@ -152,5 +161,30 @@ public static class UI
             }
         }
         while (true);
+    }
+    static public void ReportsMenu()
+    {
+        AnsiConsole.MarkupLine("[bold red]This feature is not completed yet. Please come back later.[/]");
+        Console.ReadKey();
+
+        AnsiConsole.MarkupLine("[bold red]Please select a report.[/]");
+        Console.ReadKey();
+
+
+        // View Average session time
+        // Challenge Requirement - total and average coding session per period. Allow user to pick grouping by day / month / year
+
+    }
+
+    static public void TopResults()
+    {
+        // View top 3 longest coding sessions
+        int records;
+        do
+        {
+            records = AnsiConsole.Prompt(
+            new TextPrompt<int>("Please select the amount of records to display (max 5): "));
+        }
+        while (records >= 0 && records <= 5);
     }
 }
