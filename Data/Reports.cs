@@ -2,6 +2,7 @@
 
 enum Reports
 {
+    BackToMain,
     TopResults,
     AverageTime,
     TotalPerMonth,

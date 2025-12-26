@@ -136,7 +136,7 @@ public static class DataConnection
 
     }
 
-    internal static List<Event> GetTopResults(int numRecords)
+    public static List<Event> GetTopResults(int numRecords)
     {
         string query = $"SELECT * FROM {tableName}";
         List<Event> output = new();
@@ -152,7 +152,7 @@ public static class DataConnection
         }
         else
         {
-            output.OrderByDescending(x => x.Duration)
+            output = output.OrderByDescending(x => x.DurationMinutes)
                 .Take(numRecords)
                 .ToList();
         }

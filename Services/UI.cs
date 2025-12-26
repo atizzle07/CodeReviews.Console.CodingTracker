@@ -17,7 +17,6 @@ public static class UI
     {
         Console.Clear();
 
-        //TODO - Put this menu selection in a frame
         var userInput = AnsiConsole.Prompt(
             new SelectionPrompt<MenuOption>()
             .Title("Please select a menu Option:")
@@ -63,7 +62,7 @@ public static class UI
                 string date = AnsiConsole.Ask<string>("Enter Date [[MM-dd-YYYY]]");
                 if (DateOnly.TryParseExact(date, "MM-dd-yyyy", out parsedDate))
                 {
-                    // ERROR CHECK. Error if:
+                    // TODO - ERROR CHECK. Error if:
                     // date is in the future
                     // check for months between 1-12, days between 1-31
                     isValid = true;
@@ -102,7 +101,7 @@ public static class UI
                 Convert.ToString(item.StartTime) ?? "",
                 Convert.ToString(item.EndTime) ?? "",
                 Convert.ToString(item.Details) ?? "",
-                Convert.ToString(item.Duration) ?? ""
+                Convert.ToString(item.DurationMinutes) ?? ""
                 ]);
         }
 
@@ -130,7 +129,6 @@ public static class UI
     {
         Console.Clear();
 
-        //TODO - Put this menu selection in a frame
         var userInput = AnsiConsole.Prompt(
             new SelectionPrompt<Reports>()
             .Title("Please select a report to view:")
@@ -180,9 +178,10 @@ public static class UI
         }
         while (records < 0 && records > 5);
 
-        var top3 = DataConnection.GetTopResults(records);
+        var topResults = DataConnection.GetTopResults(records);
 
-        BuildObjTable(top3);
+        BuildObjTable(topResults);
+
 
     }
 }
