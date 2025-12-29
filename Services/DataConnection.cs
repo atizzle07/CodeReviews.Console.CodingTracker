@@ -131,11 +131,6 @@ public static class DataConnection
         }
     }
 
-    public static void GetTopRecords(int records)
-    {
-
-    }
-
     public static List<Event> GetTopResults(int numRecords)
     {
         string query = $"SELECT * FROM {tableName}";
@@ -157,6 +152,11 @@ public static class DataConnection
                 .ToList();
         }
         return output;
+
+    }
+
+    public static List<DateOnly, double> GetMontlyTotals()
+    {
 
     }
 }

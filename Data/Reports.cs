@@ -7,8 +7,7 @@ enum Reports
     AverageTime,
     TotalPerMonth,
     TotalPerYear,
-    WeeklyBarCount,
-    WeeklyBarTotal,
     MonthlyBarCount,
-    MonthlyBarTotal
+    MonthlyBarTotal,
+    ExitReports
 }

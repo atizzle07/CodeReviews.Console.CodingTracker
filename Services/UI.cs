@@ -127,44 +127,72 @@ public static class UI
     }
     static public void ReportsMenu()
     {
-        Console.Clear();
+        bool exit = false;
+        do
+        {
+            Console.Clear();
 
-        var userInput = AnsiConsole.Prompt(
-            new SelectionPrompt<Reports>()
-            .Title("Please select a report to view:")
-            .AddChoices(new[] {
+            var userInput = AnsiConsole.Prompt(
+                new SelectionPrompt<Reports>()
+                .Title("Please select a report to view:")
+                .AddChoices(new[] {
                 Reports.TopResults,
                 Reports.AverageTime,
                 Reports.TotalPerMonth,
                 Reports.TotalPerYear,
-                Reports.WeeklyBarCount,
-                Reports.WeeklyBarTotal,
                 Reports.MonthlyBarCount,
-                Reports.MonthlyBarTotal
-            }));
+                Reports.MonthlyBarTotal,
+                Reports.ExitReports
+                }));
 
-        switch (userInput)
-        {
-            case Reports.TopResults:
-                DisplayTopResults();
-                break;
-            case Reports.AverageTime:
-                break;
-            case Reports.TotalPerMonth:
-                break;
-            case Reports.TotalPerYear:
-                break;
-            case Reports.WeeklyBarCount:
-                break;
-            case Reports.WeeklyBarTotal:
-                break;
-            case Reports.MonthlyBarCount:
-                break;
-            case Reports.MonthlyBarTotal:
-                break;
-            default:
-                break;
-        }
+            switch (userInput)
+            {
+                case Reports.TopResults:
+                    UI.DisplayTopResults();
+                    break;
+                case Reports.AverageTime:
+                    UI.AverageTime();
+                    break;
+                case Reports.TotalPerMonth:
+                    UI.MonthlyTotal();
+                    break;
+                case Reports.TotalPerYear:
+                    UI.YearlyTotal();
+                    break;
+                case Reports.MonthlyBarCount:
+                    UI.MonthlyBarCount();
+                    break;
+                case Reports.MonthlyBarTotal:
+                    UI.MonthlyBarTotal();
+                    break;
+                case Reports.ExitReports:
+                    exit = false;
+                    break;
+            }
+        } while (exit != false);
+    }
+
+    //TODO - need to finish reports
+    private static void MonthlyBarTotal()
+    {
+        //Pull data from dataconnection into a list of monthly coding groups
+        var chart = new BarChart();
+    }
+    private static void MonthlyBarCount()
+    {
+        throw new NotImplementedException();
+    }
+    private static void YearlyTotal()
+    {
+        throw new NotImplementedException();
+    }
+    private static void MonthlyTotal()
+    {
+        throw new NotImplementedException();
+    }
+    private static void AverageTime()
+    {
+        throw new NotImplementedException();
     }
 
     static public void DisplayTopResults()
