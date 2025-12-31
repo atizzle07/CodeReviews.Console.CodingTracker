@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace CodingTrackerApp.Data;
+﻿namespace CodingTrackerApp.Data;
 
 public enum MenuOption
 {

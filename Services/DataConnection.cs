@@ -37,7 +37,7 @@ public static class DataConnection
         {
             var rowsAffected = conn.Execute(insertQuery, newEvent);
             if (rowsAffected != 0)
-            { 
+            {
                 AnsiConsole.MarkupLine($"[bold green]Insert successful. Rows inserted:[/] {rowsAffected}");
                 Console.ReadKey();
             }

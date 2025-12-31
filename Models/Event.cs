@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace CodingTrackerApp.Models;
+﻿namespace CodingTrackerApp.Models;
 
 public class Event
 {
@@ -17,7 +15,7 @@ public class Event
                 DateTime _startTime = Convert.ToDateTime(StartTime);
                 DateTime _endTime = Convert.ToDateTime(EndTime);
                 TimeSpan _duration = _endTime - _startTime;
-                return Math.Round((decimal)_duration.TotalMinutes,2);
+                return Math.Round((decimal)_duration.TotalMinutes, 2);
             }
             return null;
         }
