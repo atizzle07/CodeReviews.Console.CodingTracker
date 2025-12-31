@@ -1,6 +1,7 @@
 ﻿using CodingTrackerApp.Data;
 using CodingTrackerApp.Models;
 using Spectre.Console;
+using System.Globalization;
 using System.Reflection;
 
 namespace CodingTrackerApp.Services;
@@ -25,19 +26,28 @@ public static class UI
                 MenuOption.ViewSavedEntries,
                 MenuOption.UpdateEntry,
                 MenuOption.DeleteEntry,
-                MenuOption.Reports
             }));
         return userInput;
     }
     public static Event GetNewRecordInfo()
     {
-        //Console.Clear();
+        bool isValid;
         Event codeEvent = new();
 
         codeEvent.StartTime = GetDateFromUser("Start Time").ToString();
-        codeEvent.EndTime = GetDateFromUser("End Time").ToString();
+        do
+        {
+            isValid = false;
+            codeEvent.EndTime = GetDateFromUser("End Time").ToString();
+            if (Validation.IsValidDatePair(codeEvent.StartTime, codeEvent.EndTime))
+                isValid = true;
+            else
+                AnsiConsole.MarkupLine("[bold red]End date/time is before start. Please enter a valid date/time...[/]");
+        }
+        while (true);
+        
 
-        AnsiConsole.Markup($"[bold orange3]Please enter any comments you would like to save...[/]");
+        AnsiConsole.Markup($"[bold orange3]Please enter any comments you would like to save...[/]\n");
         codeEvent.Details = Console.ReadLine();
         return codeEvent;
     }
@@ -59,24 +69,19 @@ public static class UI
         {
             do
             {
+                isValid = false;
                 string date = AnsiConsole.Ask<string>("Enter Date [[MM-dd-YYYY]]");
-                if (DateOnly.TryParseExact(date, "MM-dd-yyyy", out parsedDate))
-                {
-                    // TODO - ERROR CHECK. Error if:
-                    // date is in the future
-                    // check for months between 1-12, days between 1-31
+                if (DateOnly.TryParseExact(date, "MM-dd-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
                     isValid = true;
-                }
                 else
-                {
                     AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
-                }
             } while (!isValid);
 
             do
             {
+                isValid = false;
                 string time = AnsiConsole.Ask<string>("Enter 24HR Time [[HH:MM]]");
-                if (TimeOnly.TryParseExact(time, "HH:mm", out parsedTime))
+                if (TimeOnly.TryParseExact(time, "HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedTime))
                     isValid = true;
                 else
                     AnsiConsole.MarkupLine("[bold red]Invalid entry. Please try again...[/]");
@@ -96,13 +101,12 @@ public static class UI
 
         foreach (var item in events)
         {
-            table.AddRow([
-                Convert.ToString(item.ID) ?? "",
-                Convert.ToString(item.StartTime) ?? "",
-                Convert.ToString(item.EndTime) ?? "",
-                Convert.ToString(item.Details) ?? "",
-                Convert.ToString(item.DurationMinutes) ?? ""
-                ]);
+            table.AddRow(Convert.ToString(item.ID) ?? "");
+            table.AddRow(Convert.ToString(item.ID) ?? "");
+            table.AddRow(Convert.ToString(item.StartTime) ?? "");
+            table.AddRow(Convert.ToString(item.EndTime) ?? "");
+            table.AddRow(Convert.ToString(item.Details) ?? "");
+            table.AddRow(Convert.ToString(item.DurationMinutes) ?? "");
         }
 
         AnsiConsole.Write(table);
@@ -124,92 +128,5 @@ public static class UI
             }
         }
         while (true);
-    }
-    static public void ReportsMenu()
-    {
-        bool exit = false;
-        do
-        {
-            Console.Clear();
-
-            var userInput = AnsiConsole.Prompt(
-                new SelectionPrompt<Reports>()
-                .Title("Please select a report to view:")
-                .AddChoices(new[] {
-                Reports.TopResults,
-                Reports.AverageTime,
-                Reports.TotalPerMonth,
-                Reports.TotalPerYear,
-                Reports.MonthlyBarCount,
-                Reports.MonthlyBarTotal,
-                Reports.ExitReports
-                }));
-
-            switch (userInput)
-            {
-                case Reports.TopResults:
-                    UI.DisplayTopResults();
-                    break;
-                case Reports.AverageTime:
-                    UI.AverageTime();
-                    break;
-                case Reports.TotalPerMonth:
-                    UI.MonthlyTotal();
-                    break;
-                case Reports.TotalPerYear:
-                    UI.YearlyTotal();
-                    break;
-                case Reports.MonthlyBarCount:
-                    UI.MonthlyBarCount();
-                    break;
-                case Reports.MonthlyBarTotal:
-                    UI.MonthlyBarTotal();
-                    break;
-                case Reports.ExitReports:
-                    exit = false;
-                    break;
-            }
-        } while (exit != false);
-    }
-
-    //TODO - need to finish reports
-    private static void MonthlyBarTotal()
-    {
-        //Pull data from dataconnection into a list of monthly coding groups
-        var chart = new BarChart();
-    }
-    private static void MonthlyBarCount()
-    {
-        throw new NotImplementedException();
-    }
-    private static void YearlyTotal()
-    {
-        throw new NotImplementedException();
-    }
-    private static void MonthlyTotal()
-    {
-        throw new NotImplementedException();
-    }
-    private static void AverageTime()
-    {
-        throw new NotImplementedException();
-    }
-
-    static public void DisplayTopResults()
-    {
-        // View top x longest coding sessions
-        int records;
-        do
-        {
-            records = AnsiConsole.Prompt(
-            new TextPrompt<int>("Please select the amount of records to display (max 5): "));
-        }
-        while (records < 0 && records > 5);
-
-        var topResults = DataConnection.GetTopResults(records);
-
-        BuildObjTable(topResults);
-
-
     }
 }

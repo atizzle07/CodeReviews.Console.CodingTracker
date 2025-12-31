@@ -31,9 +31,6 @@ public class Program
                 case MenuOption.DeleteEntry:
                     DataConnection.DeleteRecord();
                     break;
-                case MenuOption.Reports:
-                    UI.ReportsMenu();
-                    break;
                 case MenuOption.ExitApplication:
                     AnsiConsole.MarkupLine("[orange3]Exiting Application... Press Enter to Continue[/]");
                     break;

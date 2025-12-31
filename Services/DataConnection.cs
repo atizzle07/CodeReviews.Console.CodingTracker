@@ -1,6 +1,7 @@
 ﻿using CodingTrackerApp.Models;
 using Dapper;
 using Spectre.Console;
+using System.Configuration;
 using System.Data.SQLite;
 
 
@@ -10,8 +11,8 @@ public static class DataConnection
 {
     static readonly string tableName = "event";
     //TODO - Need to add config connection logic. This code throws an error. The computer cannot find the connection string.
-    //static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString; 
-    static readonly string connectionString = "Data Source=codingtracker.db;Version=3;";
+    static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
+    // static readonly string connectionString = "Data Source=codingtracker.db;Version=3;";
 
     public static void CreateTable()
     {
@@ -37,8 +38,8 @@ public static class DataConnection
         using (var conn = new SQLiteConnection(connectionString))
         {
             var rowsAffected = conn.Execute(insertQuery, newEvent);
-            if (rowsAffected != 0) // TODO - Change these to UI.OperationFailed() and UI.OperationSucceeded() methods to move UI logic out of this class
-            {
+            if (rowsAffected != 0)
+            { 
                 AnsiConsole.MarkupLine($"[bold green]Insert successful. Rows inserted:[/] {rowsAffected}");
                 Console.ReadKey();
             }
@@ -129,34 +130,5 @@ public static class DataConnection
                 Console.ReadKey();
             }
         }
-    }
-
-    public static List<Event> GetTopResults(int numRecords)
-    {
-        string query = $"SELECT * FROM {tableName}";
-        List<Event> output = new();
-        using (var conn = new SQLiteConnection(connectionString))
-        {
-            output = conn.Query<Event>(query).ToList();
-        }
-
-        if (output.Count() == 0)
-        {
-            AnsiConsole.MarkupLine($"[bold red]No Records Found[/]");
-            Console.ReadKey();
-        }
-        else
-        {
-            output = output.OrderByDescending(x => x.DurationMinutes)
-                .Take(numRecords)
-                .ToList();
-        }
-        return output;
-
-    }
-
-    public static List<DateOnly, double> GetMontlyTotals()
-    {
-
     }
 }
