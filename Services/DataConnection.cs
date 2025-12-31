@@ -9,10 +9,8 @@ namespace CodingTrackerApp.Services;
 
 public static class DataConnection
 {
-    static readonly string tableName = "event";
-    //TODO - Need to add config connection logic. This code throws an error. The computer cannot find the connection string.
+    const string tableName = "event";
     static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
-    // static readonly string connectionString = "Data Source=codingtracker.db;Version=3;";
 
     public static void CreateTable()
     {
@@ -51,7 +49,7 @@ public static class DataConnection
         }
     }
 
-    public static void ViewAllRecords() //TODO - change to "GetAllRecords" and list<event> instead of void to move UI logic out of this class
+    public static void ViewAllRecords()
     {
         string selectQuery = $"SELECT * FROM {tableName}";
         using (var conn = new SQLiteConnection(connectionString))
@@ -65,7 +63,7 @@ public static class DataConnection
             }
             else
             {
-                UI.BuildObjTable(output);
+                UI.BuildViewTable(output);
             }
         }
     }
@@ -111,7 +109,6 @@ public static class DataConnection
         ViewAllRecords();
         Rule rule = new Rule("[bold red]Delete Record[/]").LeftJustified();
         AnsiConsole.Write(rule);
-        //AnsiConsole.MarkupLine("[red]Delete Record[/]");
         int id = UI.GetValidRecordID();
         string deleteQuery = $"DELETE FROM {tableName} WHERE ID = @ID";
 

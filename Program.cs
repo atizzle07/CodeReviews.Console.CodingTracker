@@ -2,7 +2,6 @@
 using CodingTrackerApp.Services;
 using Spectre.Console;
 
-
 namespace CodingTrackerApp;
 
 public class Program
@@ -16,7 +15,6 @@ public class Program
         do
         {
             option = UI.GetMainMenuChoice();
-
             switch (option)
             {
                 case MenuOption.AddEntry:
@@ -24,6 +22,7 @@ public class Program
                     break;
                 case MenuOption.ViewSavedEntries:
                     DataConnection.ViewAllRecords();
+                    Console.ReadKey();
                     break;
                 case MenuOption.UpdateEntry:
                     DataConnection.UpdateRecord();

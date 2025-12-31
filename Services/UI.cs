@@ -17,7 +17,6 @@ public static class UI
     public static MenuOption GetMainMenuChoice()
     {
         Console.Clear();
-
         var userInput = AnsiConsole.Prompt(
             new SelectionPrompt<MenuOption>()
             .Title("Please select a menu Option:")
@@ -26,6 +25,7 @@ public static class UI
                 MenuOption.ViewSavedEntries,
                 MenuOption.UpdateEntry,
                 MenuOption.DeleteEntry,
+                MenuOption.ExitApplication
             }));
         return userInput;
     }
@@ -34,18 +34,22 @@ public static class UI
         bool isValid;
         Event codeEvent = new();
 
-        codeEvent.StartTime = GetDateFromUser("Start Time").ToString();
+        DateTime _startTime = GetDateFromUser("Start Time");
+        codeEvent.StartTime = _startTime.ToString();
         do
         {
             isValid = false;
-            codeEvent.EndTime = GetDateFromUser("End Time").ToString();
-            if (Validation.IsValidDatePair(codeEvent.StartTime, codeEvent.EndTime))
+            DateTime _endTime = GetDateFromUser("End Time");
+            if (_endTime >= _startTime)
+            {
                 isValid = true;
+                codeEvent.EndTime = _endTime.ToString();
+            }
             else
                 AnsiConsole.MarkupLine("[bold red]End date/time is before start. Please enter a valid date/time...[/]");
         }
-        while (true);
-        
+        while (isValid == false);
+
 
         AnsiConsole.Markup($"[bold orange3]Please enter any comments you would like to save...[/]\n");
         codeEvent.Details = Console.ReadLine();
@@ -90,10 +94,10 @@ public static class UI
             return parsedDate.ToDateTime(parsedTime);
         }
     }
-    public static void BuildObjTable(List<Event> events)
+    public static void BuildViewTable(List<Event> events)
     {
         Table table = new();
-        Event e = new(); // Create new instance of Event to build dynamic table
+        Event e = new(); // Create new instance of Event to build dynamically sized table
         foreach (PropertyInfo prop in e.GetType().GetProperties())
         {
             table.AddColumns(prop.Name);
@@ -101,16 +105,15 @@ public static class UI
 
         foreach (var item in events)
         {
-            table.AddRow(Convert.ToString(item.ID) ?? "");
-            table.AddRow(Convert.ToString(item.ID) ?? "");
-            table.AddRow(Convert.ToString(item.StartTime) ?? "");
-            table.AddRow(Convert.ToString(item.EndTime) ?? "");
-            table.AddRow(Convert.ToString(item.Details) ?? "");
-            table.AddRow(Convert.ToString(item.DurationMinutes) ?? "");
+            table.AddRow(
+                Convert.ToString(item.ID) ?? "",
+                Convert.ToString(item.StartTime) ?? "",
+                Convert.ToString(item.EndTime) ?? "",
+                Convert.ToString(item.Details) ?? "",
+                Convert.ToString(item.DurationMinutes) ?? "");
         }
 
         AnsiConsole.Write(table);
-        Console.ReadKey();
     }
     public static int GetValidRecordID()
     {
@@ -122,10 +125,7 @@ public static class UI
                 if (Validation.isValidID(parsedID))
                     return parsedID;
             }
-            else
-            {
-                continue;
-            }
+            else continue;
         }
         while (true);
     }
