@@ -122,7 +122,7 @@ public static class UI
             string id = AnsiConsole.Ask<string>("Enter Record ID:");
             if (int.TryParse(id, out int parsedID))
             {
-                if (Validation.isValidId(parsedID))
+                if (Validation.IsValidId(parsedID))
                     return parsedID;
             }
             else continue;

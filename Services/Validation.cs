@@ -2,7 +2,7 @@
 
 public class Validation
 {
-    public static bool isValidId(int input)
+    public static bool IsValidId(int input)
     {
         List<int> records = DataConnection.GetAllRecordIDs();
 
