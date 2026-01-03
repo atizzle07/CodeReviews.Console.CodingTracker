@@ -15,6 +15,9 @@
     <PackageReference Include="Dapper" Version="2.1.66">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.1" />
     <PackageReference Include="Spectre.Console" Version="0.54.0">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
@@ -24,6 +27,12 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.119">
       <TreatAsUsed>true</TreatAsUsed>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

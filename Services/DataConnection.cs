@@ -1,16 +1,25 @@
 ﻿using CodingTrackerApp.Models;
 using Dapper;
+using Microsoft.Extensions.Configuration;
 using Spectre.Console;
-using System.Configuration;
 using System.Data.SQLite;
 
 
 namespace CodingTrackerApp.Services;
 
-public static class DataConnection
+public class DataConnection
 {
     const string tableName = "event";
-    static string connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
+    static IConfiguration config = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .Build();
+
+    static string connectionString =>
+    config.GetConnectionString("Default")
+        ?? throw new InvalidOperationException(
+            "Unable to find default connection string; exiting..."
+        );
 
     public static void CreateTable()
     {
