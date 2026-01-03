@@ -15,7 +15,7 @@ public class DataConnection
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
-    static string connectionString =>
+    static string ConnectionString =>
     config.GetConnectionString("Default")
         ?? throw new InvalidOperationException(
             "Unable to find default connection string; exiting..."
@@ -30,7 +30,7 @@ public class DataConnection
                                 Details TEXT
                                 )";
 
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             conn.Execute(createTableText);
         }
@@ -42,7 +42,7 @@ public class DataConnection
         Event newEvent = UI.GetNewRecordInfo();
         string insertQuery = $"INSERT INTO {tableName} (StartTime, EndTime, Details) VALUES (@StartTime, @EndTime, @Details)";
 
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             var rowsAffected = conn.Execute(insertQuery, newEvent);
             if (rowsAffected != 0)
@@ -61,7 +61,7 @@ public class DataConnection
     public static void ViewAllRecords()
     {
         string selectQuery = $"SELECT * FROM {tableName}";
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             var output = conn.Query<Event>(selectQuery).ToList();
 
@@ -80,7 +80,7 @@ public class DataConnection
     public static List<int> GetAllRecordIDs()
     {
         string selectRecordIDQuery = $"SELECT ID FROM {tableName}";
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             var output = conn.Query<int>(selectRecordIDQuery).ToList();
             return output;
@@ -95,7 +95,7 @@ public class DataConnection
         Event codeEvent = UI.GetNewRecordInfo();
         codeEvent.ID = updateRecord;
 
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             var rowsAffected = conn.Execute(updateQuery, codeEvent);
 
@@ -121,7 +121,7 @@ public class DataConnection
         int id = UI.GetValidRecordID();
         string deleteQuery = $"DELETE FROM {tableName} WHERE ID = @ID";
 
-        using (var conn = new SQLiteConnection(connectionString))
+        using (var conn = new SQLiteConnection(ConnectionString))
         {
             int rowsAffected = conn.Execute(deleteQuery, new { ID = id });
 
